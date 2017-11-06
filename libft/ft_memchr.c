@@ -1,29 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.h                                    :+:      :+:    :+:   */
+/*   ft_putstr.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: satkins <satkins@student.42.us.org>        +#+  +:+       +#+        */
+/*   By: satkins <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/11/06 12:14:45 by satkins           #+#    #+#             */
-/*   Updated: 2017/11/06 12:14:50 by satkins          ###   ########.fr       */
+/*   Created: 2016/07/19 22:58:39 by satkins           #+#    #+#             */
+/*   Updated: 2016/07/19 23:00:46 by satkins          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef GET_NEXT_LINE_H
+#include "libft.h"
 
-# define GET_NEXT_LINE_H
+void			*ft_memchr(const void *s, int c, size_t n)
+{
+	const char	*s_ptr;
+	size_t		i;
 
-# include <stdlib.h>
-
-# include <fcntl.h>
-
-# include <unistd.h>
-
-# define BUFF_SIZE 2
-
-# include "./libft/libft.h"
-
-int					get_next_line(const int fd, char **line);
-
-#endif
+	i = 0;
+	s_ptr = (const char *)s;
+	while (i < n)
+	{
+		if (s_ptr[i] == c)
+			return ((void *)&(s_ptr[i]));
+		i++;
+	}
+	return (NULL);
+}

@@ -1,29 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.h                                    :+:      :+:    :+:   */
+/*   ft_strnjoin.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: satkins <satkins@student.42.us.org>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/11/06 12:14:45 by satkins           #+#    #+#             */
-/*   Updated: 2017/11/06 12:14:50 by satkins          ###   ########.fr       */
+/*   Created: 2017/11/02 21:27:56 by satkins           #+#    #+#             */
+/*   Updated: 2017/11/02 21:27:58 by satkins          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef GET_NEXT_LINE_H
+#include "libft.h"
 
-# define GET_NEXT_LINE_H
+char		*ft_strnjoin(char const *s1, char const *s2, int i)
+{
+	char	*ret;
 
-# include <stdlib.h>
-
-# include <fcntl.h>
-
-# include <unistd.h>
-
-# define BUFF_SIZE 2
-
-# include "./libft/libft.h"
-
-int					get_next_line(const int fd, char **line);
-
-#endif
+	ret = ft_strjoin(s1, s2);
+	if (i == 1 || i == 3)
+	{
+		free((void *)s1);
+		s1 = NULL;
+	}
+	if (i == 2 || i == 3)
+	{
+		free((void *)s2);
+		s2 = NULL;
+	}
+	return ((char *)ret);
+}

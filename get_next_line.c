@@ -12,47 +12,50 @@
 
 #include "get_next_line.h"
 
-int				check_buff(char **hold, char **line)
+int				ret_line(char **hold_over, char **line)
 {
+	char		*ptr;
 	char		*tmp;
-	if ((tmp = ft_strchr(*hold, '\n')))
-	{
-		*tmp = '\0';
-		if (!(*line = (char *)malloc(sizeof(char) * ft_strlen(*hold) + 1)))
-			return (-1);
-		ft_strcpy(*line, *hold);
-		tmp++;
-		*hold = tmp;
-		return (1);
-	}
-	return (0);
+
+	ptr = ft_strchr(*hold_over, '\n');
+	*ptr = '\0';
+	*line = ft_strdup(*hold_over);
+	tmp = *hold_over;
+	*hold_over = ft_strdup(ptr + 1);
+	free(tmp);
+	return (1);
 }
 
-int					get_next_line(const int fd, char **line)
+int				ret_final(char **hold_over, char **line)
 {
-	char			buff[BUFF_SIZE + 1];
-	static char		*hold_over;
-	int				bytes;
-
-	if (hold_over != NULL)
-		if (check_buff(&hold_over, line))
-			return (1);
-	while ((bytes = read(fd, buff, BUFF_SIZE)) > 0)
-	{
-		buff[bytes] = 0;
-		if (!hold_over)
-			hold_over = ft_strdup(buff);
-		else
-			hold_over = ft_strjoin(hold_over, buff);
-		if (check_buff(&hold_over, line))
-			return (1);
-	}
-	if (bytes < 0)
-		return (-1);
-	if (hold_over == NULL)
-		return (0);
-	if (!(*line = (char *)malloc(sizeof(char) * ft_strlen(hold_over) + 1)))
-			return (-1);
-	ft_strcpy(*line, hold_over);
+	*line = ft_strdup(*hold_over);
+	if (**hold_over)
+		ft_bzero((void *)*hold_over, sizeof(*hold_over));
 	return (1);
+}
+
+int				get_next_line(int fd, char **line)
+{
+	static char	*hold_over = "\0";
+	int			bytes_read;
+	char		buff[BUFF_SIZE + 1];
+
+	if (fd < 0 || fd > 1000 || line == NULL || (read(fd, buff, 0)) < 0)
+		return (-1);
+	bytes_read = 1;
+	while (ft_strchr(hold_over, '\n') == 0 && bytes_read != 0)
+	{
+		bytes_read = read(fd, buff, BUFF_SIZE);
+		buff[bytes_read] = 0;
+		if (hold_over && *hold_over == '\0')
+			hold_over = ft_strjoin(hold_over, buff);
+		else
+			hold_over = ft_strnjoin(hold_over, buff, 1);
+	}
+	if (ft_strchr(hold_over, '\n'))
+		return (ret_line(&hold_over, line));
+	if (hold_over && *hold_over)
+		return (ret_final(&hold_over, line));
+	*line = NULL;
+	return (0);
 }
