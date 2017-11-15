@@ -6,7 +6,7 @@
 /*   By: satkins <satkins@student.42.us.org>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/17 15:31:12 by satkins           #+#    #+#             */
-/*   Updated: 2017/10/18 15:40:38 by satkins          ###   ########.fr       */
+/*   Updated: 2017/11/14 19:37:16 by satkins          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,26 +36,25 @@ int				ret_final(char **hold_over, char **line)
 
 int				get_next_line(int fd, char **line)
 {
-	static char	*hold_over = "\0";
+	static char	*hold_over[5000];
 	int			bytes_read;
 	char		buff[BUFF_SIZE + 1];
 
-	if (fd < 0 || fd > 1000 || line == NULL || (read(fd, buff, 0)) < 0)
+	if (fd < 0 || fd > 4999 || line == NULL || (read(fd, buff, 0)) < 0)
 		return (-1);
+	if (!hold_over[fd])
+		hold_over[fd] = ft_strnew(0);
 	bytes_read = 1;
-	while (ft_strchr(hold_over, '\n') == 0 && bytes_read != 0)
+	while (ft_strchr(hold_over[fd], '\n') == 0 && bytes_read != 0)
 	{
 		bytes_read = read(fd, buff, BUFF_SIZE);
 		buff[bytes_read] = 0;
-		if (hold_over && *hold_over == '\0')
-			hold_over = ft_strjoin(hold_over, buff);
-		else
-			hold_over = ft_strnjoin(hold_over, buff, 1);
+		hold_over[fd] = ft_strnjoin(hold_over[fd], buff, 1);
 	}
-	if (ft_strchr(hold_over, '\n'))
-		return (ret_line(&hold_over, line));
-	if (hold_over && *hold_over)
-		return (ret_final(&hold_over, line));
+	if (ft_strchr(hold_over[fd], '\n'))
+		return (ret_line(&(hold_over[fd]), line));
+	if (hold_over[fd] && *hold_over[fd])
+		return (ret_final(&(hold_over[fd]), line));
 	*line = NULL;
 	return (0);
 }

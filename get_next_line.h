@@ -20,7 +20,7 @@
 
 # include <unistd.h>
 
-# define BUFF_SIZE 2
+# define BUFF_SIZE 50
 
 # include "./libft/libft.h"
 
